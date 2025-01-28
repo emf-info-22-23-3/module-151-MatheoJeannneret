@@ -1,14 +1,13 @@
 <?php
+try {
 	$bdd = new PDO('mysql:host=localhost;dbname=nomDB', 'root', 'pwd');
-	$reponse = …;
-	
-	
-	while (…)
-	{
-	
-	        …
+} catch (Exception $e) {
+	die('Erreur :' . $e->getMessage());
+}
 
-	
-	}
-	$reponse->closeCursor();
-?>
+$reponse = $bdd->prepare("SELECT titre FROM jeux_video");
+$reponse->execute();
+while ($donne = $reponse->fetch()) {
+	echo $donne['titre'] . '<br>';
+}
+$reponse->closeCursor();
