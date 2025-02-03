@@ -27,7 +27,21 @@ class Wrk
         return $retour;
     }
 
-    public function getPlayers($team): array {
-        
+    public function getPlayers($query): array
+    {
+        try {
+            $retour = array();
+            $queryPrepared = $this->bdd->prepare($query);
+            $queryPrepared->execute();
+            $recipes = $queryPrepared->fetchAll();
+            foreach ($recipes as $recipe) {
+                array_push($retour, new Joueur($recipe['PK_joueur'], $recipe['Points'], $recipe['Nom']));
+            }
+            $queryPrepared->closeCursor();
+            return $retour;
+        } catch (PDOException $e) {
+            print "Erreur !: " . $e->getMessage() . "<br/>";
+            die();
+        }
     }
 }

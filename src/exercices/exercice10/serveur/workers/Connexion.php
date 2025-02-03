@@ -22,7 +22,7 @@ class Connexion {
      * @return Singleton de la connexion
      */
     public static function getInstance() {
-        if (is_null(self::$_instance)) {
+        if (is_null(value: self::$_instance)) {
             self::$_instance = new connexion();
         }
         return self::$_instance;

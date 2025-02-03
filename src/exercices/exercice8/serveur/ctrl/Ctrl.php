@@ -19,4 +19,15 @@ class Ctrl
         $retour .= "</equipes>";
         return $retour;
     }
+
+    public function getPlayers($team)
+    {
+        $players = $this->wrk->getPlayers($team);
+        $retour = "<players>";
+        foreach ($players as $key => $value) {
+            $retour .= "<player><id>" . $value->getId() . "</id><nom>" . $value->getNom() . "</nom><points>" . $value->getPoints() . "</points></player>";
+        }
+        $retour .= "</players>";
+        return $retour;
+    }
 }

@@ -32,11 +32,12 @@ function chargerTeamSuccess(data, text, jqXHR) {
  * @param {type} jqXHR
  */
 function chargerPlayerSuccess(data, text, jqXHR) {
+    console.log(data);
     // Appelé lorsque la liste des joueurs est reçue
     var cmbJoueurs = document.getElementById("cmbJoueurs");
     // A COMPLETER!!! selon la logique suivante:
     cmbJoueurs.options.length = 0;
-    $(data).find("joueur").each(function () {
+    $(data).find("player").each(function () {
         var joueur = new Joueur();
         joueur.setNom($(this).find("nom").text());
         joueur.setPoints($(this).find("points").text());
