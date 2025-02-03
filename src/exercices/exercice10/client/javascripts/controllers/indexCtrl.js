@@ -10,15 +10,14 @@
  * @param {type} jqXHR
  * @returns {undefined}
  */
-function chargerPaysSuccess(data, text, jqXHR)
-{   
-	var cmbPays = document.getElementById("cmbPays");
-    $(data).find("pays").each(function() {
-      var pays = new Pays();
-      pays.setNom($(this).find("nom").text());
-      pays.setPk($(this).find("pk_pays").text());
-	  cmbPays.options[cmbPays.options.length] = new Option(pays, JSON.stringify(pays));
-    });  
+function chargerPaysSuccess(data, text, jqXHR) {
+  var cmbPays = document.getElementById("cmbPays");
+  $(data).find("pays").each(function () {
+    var pays = new Pays();
+    pays.setNom($(this).find("nom").text());
+    pays.setPk($(this).find("pk_pays").text());
+    cmbPays.options[cmbPays.options.length] = new Option(pays, JSON.stringify(pays));
+  });
 }
 
 /**
@@ -28,16 +27,16 @@ function chargerPaysSuccess(data, text, jqXHR)
  * @param {type} jqXHR
  * @returns {undefined}
  */
-function chargerSkieursSuccess(data, text, jqXHR)
-{   
-    var txt = '';
-    $(data).find("skieur").each(function() {
-        var skieur = new Skieur();
-        skieur.setNom($(this).find("nom").text());
-        txt = txt + "<tr><td>" + skieur.getPosition() + "</td><td>" + skieur.toString() + "</td></tr>";
+function chargerSkieursSuccess(data, text, jqXHR) {
+  var txt = '';
+  $(data).find("skieur").each(function () {
+    var skieur = new Skieur();
+    skieur.setNom($(this).find("nom").text());
+    skieur.setPosition($(this).find("position").text());
+    txt = txt + "<tr><td>" + skieur.getPosition() + "</td><td>" + skieur.toString() + "</td></tr>";
 
-    });  
-    document.getElementById("tableContent").innerHTML = txt;
+  });
+  document.getElementById("tableContent").innerHTML = txt;
 }
 
 /**
@@ -65,24 +64,24 @@ function chargerSkieursError(request, status, error) {
 /**
  * Méthode "start" appelée après le chargement complet de la page
  */
-$(document).ready(function() {
+$(document).ready(function () {
   var cmbPays = $("#cmbPays");
   var pays = '';
 
-  $.getScript("javascripts/helpers/dateHelper.js", function() {
+  $.getScript("javascripts/helpers/dateHelper.js", function () {
     console.log("dateHelper.js chargé !");
   });
-  $.getScript("javascripts/beans/pays.js", function() {
+  $.getScript("javascripts/beans/pays.js", function () {
     console.log("pays.js chargé !");
   });
-  $.getScript("javascripts/beans/skieur.js", function() {
+  $.getScript("javascripts/beans/skieur.js", function () {
     console.log("skieur.js chargé !");
   });
-  $.getScript("javascripts/services/servicesHttp.js", function() {
+  $.getScript("javascripts/services/servicesHttp.js", function () {
     console.log("servicesHttp.js chargé !");
     chargerPays(chargerPaysSuccess, chargerPaysError);
   });
-  cmbPays.change(function(event) {
+  cmbPays.change(function (event) {
     pays = this.options[this.selectedIndex].value;
     chargerSkieurs(JSON.parse(pays).pk, chargerSkieursSuccess, chargerSkieursError);
   });
