@@ -1,20 +1,25 @@
 <?php
 
-class LoginManager
+class TypeTrainManager
 {
 
-    private $wrkLogin;
+    private $wrkTypeTrain;
 
     public function __construct()
     {
-        $this->wrkLogin = new LoginDBManager();
+        $this->wrkTypeTrain = new TypeTrainDBManager();
     }
 
-    public function checkLogin($nom, $password)
+    public function getAllTypes()
+    {
+        return $this->wrkTypeTrain->getAllTypes();
+    }
+
+    public function getTypeById($pkTypeTrain)
     {
         $retour = NULL;
-        if ($this->checkParam($nom) and $this->checkParam($password)) {
-            $retour = $this->wrkLogin->checkLogin($nom, $password);
+        if ($this->checkParam($pkTypeTrain)) {
+            $retour = $this->wrkTypeTrain->getTypeById($pkTypeTrain);
         } else {
             $retour = HttpReturns::BAD_REQUEST();
         }

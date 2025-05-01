@@ -1,20 +1,25 @@
 <?php
 
-class LoginManager
+class LocaliteManager
 {
 
-    private $wrkLogin;
+    private $wrkLocalite;
 
     public function __construct()
     {
-        $this->wrkLogin = new LoginDBManager();
+        $this->wrkLocalite = new LocaliteDBManager();
     }
 
-    public function checkLogin($nom, $password)
+    public function getAllLocalites()
+    {
+        return $this->wrkLocalite->getAllLocalites();
+    }
+
+    public function getTypeById($pkLocalite)
     {
         $retour = NULL;
-        if ($this->checkParam($nom) and $this->checkParam($password)) {
-            $retour = $this->wrkLogin->checkLogin($nom, $password);
+        if ($this->checkParam($pkLocalite)) {
+            $retour = $this->wrkLocalite->getLocaliteById($pkLocalite);
         } else {
             $retour = HttpReturns::BAD_REQUEST();
         }

@@ -1,10 +1,23 @@
 <?php
+
+header("Access-Control-Allow-Origin: *");
+header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE");
+header("Access-Control-Allow-Headers: Content-Type, Authorization");
+header("Access-Control-Allow-Credentials: true");
+
+
 include_once('beans/ErrorAnswer.php');
 include_once('beans/HttpReturns.php');
 include_once('beans/User.php');
+include_once('beans/TypeTrain.php');
+include_once('beans/Localite.php');
 include_once('controllers/LoginManager.php');
+include_once('controllers/TypeTrainManager.php');
+include_once('controllers/LocaliteManager.php');
 include_once('workers/Connection.php');
 include_once('workers/LoginDBManager.php');
+include_once('workers/TypeTrainDBManager.php');
+include_once('workers/LocaliteDBManager.php');
 
 if (isset($_SERVER['REQUEST_METHOD'])) {
     session_start();
@@ -13,6 +26,8 @@ if (isset($_SERVER['REQUEST_METHOD'])) {
     $receivedParams = json_decode($json, TRUE);
 
     $loginManager = new LoginManager();
+    $typeTrainManager = new TypeTrainManager();
+    $localiteManager = new LocaliteManager();
 
     if ($_SERVER['REQUEST_METHOD'] == 'POST' and $loginManager->checkReceivedParams(array('action'), $receivedParams) and $receivedParams['action'] == 'login') {
         if ($loginManager->checkReceivedParams(array('nom', 'password'), $receivedParams)) {
@@ -32,8 +47,45 @@ if (isset($_SERVER['REQUEST_METHOD'])) {
             http_response_code(HttpReturns::BAD_REQUEST()->getStatus());
             echo json_encode(HttpReturns::BAD_REQUEST());
         }
-    } else { //aucune action trouvé
-        http_response_code(HttpReturns::NOT_FOUND()->getStatus());
-        echo json_encode(HttpReturns::NOT_FOUND());
+    } else if ($_SERVER['REQUEST_METHOD'] == 'POST' and $loginManager->checkReceivedParams(array('action'), $receivedParams) and $receivedParams['action'] == "logout") {
+        $_SESSION = array();
+        session_destroy();
+        http_response_code(HttpReturns::HttpSuccess());
+        echo json_encode("user success logout");
+    } else if (isset($_SESSION['user'])) {
+        $user = $_SESSION['user'];
+        if ($user->isAdmin() == 1) {
+            switch ($_SERVER['REQUEST_METHOD']) {
+                case 'GET':
+                    if ($typeTrainManager->checkReceivedParams(array('action'), $_GET) and $_GET['action'] == "getAllTypes") {
+                        $types = $typeTrainManager->getAllTypes();
+                        if ($types instanceof ErrorAnswer) {
+                            http_response_code($types->getStatus());
+                            echo json_encode($types);
+                        } else {
+                            http_response_code(HttpReturns::HttpSuccess());
+                            echo json_encode($types);
+                        }
+                    } else if ($localiteManager->checkReceivedParams(array('action'), $_GET) and $_GET['action'] == "getAllLocalites") {
+                        $localites = $localiteManager->getAllLocalites();
+                        if ($localites instanceof ErrorAnswer) {
+                            http_response_code($localites->getStatus());
+                            echo json_encode($localites);
+                        } else {
+                            http_response_code(HttpReturns::HttpSuccess());
+                            echo json_encode($localites);
+                        }
+                    } else {
+                        http_response_code(HttpReturns::BAD_REQUEST()->getStatus());
+                        echo json_encode(HttpReturns::BAD_REQUEST());
+                    }
+            }
+        } else {
+            http_response_code(HttpReturns::FORBIDDEN()->getStatus());
+            echo json_encode(HttpReturns::FORBIDDEN());
+        }
+    } else {
+        http_response_code(HttpReturns::UNAUTHORIZED()->getStatus());
+        echo json_encode(HttpReturns::UNAUTHORIZED());
     }
 }

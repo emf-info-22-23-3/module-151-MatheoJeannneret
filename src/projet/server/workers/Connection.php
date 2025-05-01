@@ -128,4 +128,37 @@ class Connection
             return $this->dbError;
         }
     }
+
+    public function startTransaction()
+    {
+        return $this->pdo->beginTransaction();
+    }
+
+    public function addQueryToTransaction($query, $params)
+    {
+        $res = false;
+        if ($this->pdo->inTransaction()) {
+            $maQuery = $this->pdo->prepare($query);
+            $res = $maQuery->execute($params);
+        }
+        return $res;
+    }
+
+    public function commitTransaction()
+    {
+        $res = false;
+        if ($this->pdo->inTransaction()) {
+            $res = $this->pdo->commit();
+        }
+        return $res;
+    }
+
+    public function rollbackTransaction()
+    {
+        $res = false;
+        if ($this->pdo->inTransaction()) {
+            $res = $this->pdo->rollBack();
+        }
+        return $res;
+    }
 }

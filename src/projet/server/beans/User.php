@@ -1,6 +1,6 @@
 <?php
 
-class User
+class User implements JsonSerializable
 {
     private $nom;
     private $isAdmin;
@@ -11,6 +11,15 @@ class User
         $this->nom = $nom;
         $this->isAdmin = $isAdmin;
         $this->pkUser = $pkUser;
+    }
+
+    public function jsonSerialize(): mixed
+    {
+        return [
+            'nom' => $this->nom,
+            'isAdmin' => $this->isAdmin,
+            'id' => $this->pkUser
+        ];
     }
 
     public function getPkUser()
