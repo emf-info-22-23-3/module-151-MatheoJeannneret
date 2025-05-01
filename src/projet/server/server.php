@@ -11,13 +11,16 @@ include_once('beans/HttpReturns.php');
 include_once('beans/User.php');
 include_once('beans/TypeTrain.php');
 include_once('beans/Localite.php');
+include_once('beans/Horaire.php');
 include_once('controllers/LoginManager.php');
 include_once('controllers/TypeTrainManager.php');
 include_once('controllers/LocaliteManager.php');
+include_once('controllers/HoraireManager.php');
 include_once('workers/Connection.php');
 include_once('workers/LoginDBManager.php');
 include_once('workers/TypeTrainDBManager.php');
 include_once('workers/LocaliteDBManager.php');
+include_once('workers/HoraireDBManager.php');
 
 if (isset($_SERVER['REQUEST_METHOD'])) {
     session_start();
@@ -28,6 +31,7 @@ if (isset($_SERVER['REQUEST_METHOD'])) {
     $loginManager = new LoginManager();
     $typeTrainManager = new TypeTrainManager();
     $localiteManager = new LocaliteManager();
+    $horaireManager = new HoraireManager();
 
     if ($_SERVER['REQUEST_METHOD'] == 'POST' and $loginManager->checkReceivedParams(array('action'), $receivedParams) and $receivedParams['action'] == 'login') {
         if ($loginManager->checkReceivedParams(array('nom', 'password'), $receivedParams)) {
@@ -75,10 +79,65 @@ if (isset($_SERVER['REQUEST_METHOD'])) {
                             http_response_code(HttpReturns::HttpSuccess());
                             echo json_encode($localites);
                         }
+                    } else if ($horaireManager->checkReceivedParams(array('action'), $_GET) and $_GET['action'] == "getAllHoraires") {
+                        $horaires = $horaireManager->getAllHoraires();
+                        if ($horaires instanceof ErrorAnswer) {
+                            http_response_code($horaires->getStatus());
+                            echo json_encode($horaires);
+                        } else {
+                            http_response_code(HttpReturns::HttpSuccess());
+                            echo json_encode($horaires);
+                        }
                     } else {
                         http_response_code(HttpReturns::BAD_REQUEST()->getStatus());
                         echo json_encode(HttpReturns::BAD_REQUEST());
                     }
+                    break;
+                case 'POST':
+                    if ($horaireManager->checkReceivedParams(array('action'), $receivedParams) and $receivedParams['action'] == "createHoraire") {
+                        $createHoraire = $horaireManager->createHoraire($receivedParams['dateDepart'], $receivedParams['localiteDepart'], $receivedParams['localiteDestination'], $receivedParams['typeTrain']);
+                        if ($createHoraire instanceof ErrorAnswer) {
+                            http_response_code($createHoraire->getStatus());
+                            echo json_encode($createHoraire);
+                        } else {
+                            http_response_code(HttpReturns::HttpSuccess());
+                            echo json_encode($createHoraire);
+                        }
+                    } else {
+                        http_response_code(HttpReturns::BAD_REQUEST()->getStatus());
+                        echo json_encode(HttpReturns::BAD_REQUEST());
+                    }
+                    break;
+                case 'DELETE':
+                    if ($horaireManager->checkReceivedParams(array('action'), $receivedParams) and $receivedParams['action'] == "deleteHoraire") {
+                        $deleteHoraire = $horaireManager->deleteHoraire($receivedParams['pkHoraire']);
+                        if ($deleteHoraire instanceof ErrorAnswer) {
+                            http_response_code($deleteHoraire->getStatus());
+                            echo json_encode($deleteHoraire);
+                        } else {
+                            http_response_code(HttpReturns::HttpSuccess());
+                            echo json_encode($deleteHoraire);
+                        }
+                    } else {
+                        http_response_code(HttpReturns::BAD_REQUEST()->getStatus());
+                        echo json_encode(HttpReturns::BAD_REQUEST());
+                    }
+                    break;
+                case 'PUT':
+                    if ($horaireManager->checkReceivedParams(array('action'), $receivedParams) and $receivedParams['action'] == "updateHoraire") {
+                        $updateHoraire = $horaireManager->updateHoraire($receivedParams['pkHoraire'], $receivedParams['dateDepart'], $receivedParams['localiteDepart'], $receivedParams['localiteDestination'], $receivedParams['typeTrain']);
+                        if ($updateHoraire instanceof ErrorAnswer) {
+                            http_response_code($updateHoraire->getStatus());
+                            echo json_encode($updateHoraire);
+                        } else {
+                            http_response_code(HttpReturns::HttpSuccess());
+                            echo json_encode($updateHoraire);
+                        }
+                    } else {
+                        http_response_code(HttpReturns::BAD_REQUEST()->getStatus());
+                        echo json_encode(HttpReturns::BAD_REQUEST());
+                    }
+                    break;
             }
         } else {
             http_response_code(HttpReturns::FORBIDDEN()->getStatus());
