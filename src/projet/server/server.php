@@ -1,9 +1,9 @@
 <?php
 
-header("Access-Control-Allow-Origin: *");
-header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE");
-header("Access-Control-Allow-Headers: Content-Type, Authorization");
+header("Access-Control-Allow-Origin: https://jeanneretm.emf-informatique.ch");
 header("Access-Control-Allow-Credentials: true");
+header("Access-Control-Allow-Headers: Content-Type");
+header("Access-Control-Allow-Methods: GET, POST, DELETE, PUT, OPTIONS");
 
 
 include_once('beans/ErrorAnswer.php');
@@ -32,8 +32,10 @@ if (isset($_SERVER['REQUEST_METHOD'])) {
     $typeTrainManager = new TypeTrainManager();
     $localiteManager = new LocaliteManager();
     $horaireManager = new HoraireManager();
-
-    if ($_SERVER['REQUEST_METHOD'] == 'POST' and $loginManager->checkReceivedParams(array('action'), $receivedParams) and $receivedParams['action'] == 'login') {
+    if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+        http_response_code(200);
+        exit(); // Fin de traitement pour les preflight requests
+    } else if ($_SERVER['REQUEST_METHOD'] == 'POST' and $loginManager->checkReceivedParams(array('action'), $receivedParams) and $receivedParams['action'] == 'login') {
         if ($loginManager->checkReceivedParams(array('nom', 'password'), $receivedParams)) {
             $user = $loginManager->checkLogin($receivedParams['nom'], $receivedParams['password']);
             if ($user instanceof ErrorAnswer) {
@@ -56,6 +58,15 @@ if (isset($_SERVER['REQUEST_METHOD'])) {
         session_destroy();
         http_response_code(HttpReturns::HttpSuccess());
         echo json_encode("user success logout");
+    } else if ($_SERVER['REQUEST_METHOD'] == 'GET' and $horaireManager->checkReceivedParams(array('action'), $_GET) and $_GET['action'] == "getAllHoraires") {
+        $horaires = $horaireManager->getAllHoraires();
+        if ($horaires instanceof ErrorAnswer) {
+            http_response_code($horaires->getStatus());
+            echo json_encode($horaires);
+        } else {
+            http_response_code(HttpReturns::HttpSuccess());
+            echo json_encode($horaires);
+        }
     } else if (isset($_SESSION['user'])) {
         $user = $_SESSION['user'];
         if ($user->isAdmin() == 1) {
@@ -78,15 +89,6 @@ if (isset($_SERVER['REQUEST_METHOD'])) {
                         } else {
                             http_response_code(HttpReturns::HttpSuccess());
                             echo json_encode($localites);
-                        }
-                    } else if ($horaireManager->checkReceivedParams(array('action'), $_GET) and $_GET['action'] == "getAllHoraires") {
-                        $horaires = $horaireManager->getAllHoraires();
-                        if ($horaires instanceof ErrorAnswer) {
-                            http_response_code($horaires->getStatus());
-                            echo json_encode($horaires);
-                        } else {
-                            http_response_code(HttpReturns::HttpSuccess());
-                            echo json_encode($horaires);
                         }
                     } else {
                         http_response_code(HttpReturns::BAD_REQUEST()->getStatus());

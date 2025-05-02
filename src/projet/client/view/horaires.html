@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+
+<!--bar de nav-->
+<div class="container mt-4">
+  <div class="row">
+    <div class="col-auto me-auto">
+      <h1>Gestion des Horaires</h1>
+    </div>
+    <div class="col-auto">
+      <button class="btn btn-sm btn-outline-dark mt-2" id="deconnexion">
+        <i class="bi bi-box-arrow-right"></i> Déconnexion
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="container mt-4">
+  <div class="row mb-4">
+    <div class="col-md-12">
+      <div class="d-flex justify-content-between align-items-center">
+        <h2>Liste des Horaires</h2>
+        <button
+          type="button"
+          class="btn btn-success"
+          id="createHoraire"
+          data-bs-toggle="modal"
+          data-bs-target="#addHoraireModal"
+        >
+          <i class="bi bi-plus-circle"></i> Ajouter un horaire
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="d-flex flex-column align-items-center" id="horaires-container">
+    <!-- Les cartes d'horaires seront générées ici -->
+  </div>
+</div>
+
+<!-- Modal d'ajout d'horaire -->
+<div
+  class="modal fade"
+  id="addHoraireModal"
+  tabindex="-1"
+  aria-labelledby="addHoraireModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title" id="addHoraireModalLabel">
+          Ajouter un nouvel horaire
+        </h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <form id="horaire-form">
+          <div class="mb-3">
+            <label for="date" class="form-label">Date</label>
+            <input type="date" class="form-control" id="date" required />
+          </div>
+          <div class="mb-3">
+            <label for="depart" class="form-label">Localité de départ</label>
+            <select id="depart" class="form-select" required></select>
+          </div>
+          <div class="mb-3">
+            <label for="arrivee" class="form-label">Localité d'arrivée</label>
+            <select id="arrivee" class="form-select" required></select>
+          </div>
+          <div class="mb-3">
+            <label for="typeTrain" class="form-label">Type de train</label>
+            <select class="form-select" id="typeTrain" required></select>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          Annuler
+        </button>
+        <button type="button" class="btn btn-primary" id="create-horaire">
+          Enregistrer
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal de modification d'horaire -->
+<div
+  class="modal fade"
+  id="editHoraireModal"
+  tabindex="-1"
+  aria-labelledby="editHoraireModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title" id="editHoraireModalLabel">
+          Modifier un horaire
+        </h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <form id="edit-horaire-form">
+          <input type="hidden" id="edit-horaire-id" />
+          <div class="mb-3">
+            <label for="horaire-id" class="form-label">ID</label>
+            <p id="horaire-id" class="form-control-plaintext"></p>
+          </div>
+          <div class="mb-3">
+            <label for="edit-date" class="form-label">Date</label>
+            <input type="date" class="form-control" id="edit-date" required />
+          </div>
+          <div class="mb-3">
+            <label for="edit-depart" class="form-label"
+              >Localité de départ</label
+            >
+            <select id="edit-depart" class="form-select" required></select>
+          </div>
+          <div class="mb-3">
+            <label for="edit-arrivee" class="form-label"
+              >Localité d'arrivée</label
+            >
+            <select id="edit-arrivee" class="form-select" required></select>
+          </div>
+          <div class="mb-3">
+            <label for="edit-typeTrain" class="form-label">Type de train</label>
+            <select class="form-select" id="edit-typeTrain" required></select>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          Annuler
+        </button>
+        <button type="button" class="btn btn-primary" id="update-horaire">
+          Enregistrer les modifications
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

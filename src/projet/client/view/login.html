@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+
+<div
+  class="container d-flex align-items-center justify-content-center min-vh-100"
+>
+  <div class="login-container">
+    <div class="card shadow">
+      <div class="card-header bg-primary text-white text-center">
+        <h2>Gestion des Horaires</h2>
+      </div>
+      <div class="card-body">
+        <form id="login-form" action="horaires.html">
+          <div class="mb-3">
+            <label for="nom" class="form-label">Nom d'utilisateur</label>
+            <div class="input-group">
+              <span class="input-group-text"
+                ><i class="bi bi-person-fill"></i
+              ></span>
+              <input
+                type="text"
+                class="form-control"
+                id="nom"
+                placeholder="Entrez votre nom d'utilisateur"
+                required
+              />
+            </div>
+          </div>
+          <div class="mb-3">
+            <label for="password" class="form-label">Mot de passe</label>
+            <div class="input-group">
+              <span class="input-group-text"
+                ><i class="bi bi-lock-fill"></i
+              ></span>
+              <input
+                type="password"
+                class="form-control"
+                id="password"
+                placeholder="Entrez votre mot de passe"
+                required
+              />
+            </div>
+          </div>
+          <div class="d-grid gap-2">
+            <button type="submit" class="btn btn-primary btn-lg" id="connect">
+              Se connecter
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
